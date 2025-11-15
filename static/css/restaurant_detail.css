@@ -1,0 +1,246 @@
+/* Restaurant Detail Section */
+.restaurant-detail-image-section {
+    height: 350px;
+    position: relative;
+    padding: 0;
+}
+
+.restaurant-detail-image-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+}
+
+.company-info-detail {
+    position: relative;
+    z-index: 1;
+    padding: 30px;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 10px;
+    margin-top: 150px;
+}
+
+.company-info {
+    display: flex;
+    align-items: center;
+}
+
+.img-holder {
+    width: 120px;
+    height: 120px;
+    border-radius: 8px;
+    overflow: hidden;
+    margin-right: 20px;
+    border: 3px solid #fff;
+    box-shadow: 0 0 15px rgba(0,0,0,0.1);
+}
+
+.img-holder img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.text-holder .restaurant-title {
+    font-size: 24px;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 10px;
+    display: block;
+}
+
+/* Menu Categories Section */
+.sticky-sidebar {
+    position: sticky;
+    top: 20px;
+}
+
+.categories-menu {
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 15px rgba(0,0,0,0.05);
+}
+
+.menu-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.menu-list li {
+    margin-bottom: 10px;
+}
+
+.menu-list li a {
+    color: #666;
+    padding: 8px 15px;
+    display: block;
+    border-radius: 5px;
+    transition: all 0.3s ease;
+}
+
+.menu-list li a:hover {
+    background: #f8f9fa;
+    color: #c33332;
+    text-decoration: none;
+}
+
+/* Food Items Section */
+.menu-itam-holder {
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 0 15px rgba(0,0,0,0.05);
+}
+
+.element-title {
+    padding: 20px;
+    border-bottom: 1px solid #eee;
+}
+
+.element-title h5 {
+    margin: 0;
+    color: #333;
+    font-size: 18px;
+}
+
+.menu-itam-list ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.menu-itam-list li {
+    display: flex;
+    align-items: center;
+    padding: 20px;
+    border-bottom: 1px solid #eee;
+    transition: all 0.3s ease;
+}
+
+.menu-itam-list li:hover {
+    background: #f8f9fa;
+}
+
+.menu-itam-list .image-holder {
+    width: 80px;
+    height: 80px;
+    border-radius: 8px;
+    overflow: hidden;
+    margin-right: 15px;
+}
+
+.menu-itam-list .image-holder img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.menu-itam-list .text-holder {
+    flex: 1;
+}
+
+.menu-itam-list .text-holder h6 {
+    margin: 0 0 5px;
+    font-size: 16px;
+    color: #333;
+}
+
+.menu-itam-list .text-holder span {
+    color: #666;
+    font-size: 14px;
+}
+
+.menu-itam-list .price-holder {
+    text-align: right;
+    margin-left: 15px;
+}
+
+.price-holder .price {
+    display: block;
+    font-size: 18px;
+    font-weight: 600;
+    color: #c33332;
+    margin-bottom: 5px;
+}
+
+.restaurant-add-menu-btn {
+    background: #fff;
+    border: 1px solid #c33332;
+    color: #c33332;
+    width: 35px;
+    height: 35px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: all 0.3s ease;
+}
+
+.restaurant-add-menu-btn:hover {
+    background: #c33332;
+    color: #fff;
+}
+
+/* Timing Section */
+.delivery-timing {
+    margin-top: 20px;
+    padding: 15px;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 8px;
+}
+
+.delivery-dropdown {
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    padding: 10px 0;
+}
+
+.delivery-dropdown li a {
+    padding: 8px 20px;
+    display: flex;
+    justify-content: space-between;
+    color: #666;
+}
+
+.delivery-dropdown li a:hover {
+    background: #f8f9fa;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 991px) {
+    .company-info-detail {
+        margin-top: 100px;
+    }
+}
+
+@media (max-width: 767px) {
+    .company-info {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .img-holder {
+        margin: 0 auto 20px;
+    }
+    
+    .menu-itam-list li {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .menu-itam-list .image-holder {
+        margin: 0 auto 15px;
+    }
+    
+    .menu-itam-list .price-holder {
+        margin-top: 15px;
+        margin-left: 0;
+    }
+}
+

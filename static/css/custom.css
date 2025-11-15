@@ -1,0 +1,101 @@
+.main-header {
+    background: #fff;
+    padding: 15px 0;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+}
+
+.navbar {
+    padding: 0;
+}
+
+.navbar-brand {
+    padding: 0;
+    margin-right: 2rem;
+}
+
+.logo {
+    max-height: 80px; /* Increased logo size */
+    width: auto;
+   
+}
+
+.btn {
+    padding: 8px 15px; /* Adjusted button padding */
+    font-weight: 500;
+    margin-left: 10px; /* Added spacing between buttons */
+}
+
+.btn-danger {
+    background-color: #c33332;
+    border-color: #c33332;
+}
+
+.btn-danger:hover {
+    background-color: #a62928;
+    border-color: #a62928;
+}
+
+/* Responsive Styles */
+@media (max-width: 991px) {
+    .navbar .container-fluid {
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .location-search {
+        width: 100%;
+        max-width: 100%;
+        margin: 1rem 0;
+    }
+
+    .d-flex {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+@media (max-width: 576px) {
+    .d-flex {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .d-flex .btn {
+        width: 100%;
+        margin: 0 0 0.5rem 0;
+    }
+}
+
+.location-search {
+    flex: 1;
+    max-width: 400px;
+    margin: 0 2rem;
+}
+
+.location-search .input-group {
+    width: 100%;
+    position: relative;
+}
+
+.location-search .form-control {
+    height: 40px; /* Adjusted height for better alignment */
+    font-size: 14px;
+    padding-right: 40px; /* Added padding to make space for the icon */
+    border: 1px solid #ddd; /* Restored full border */
+    border-radius: 4px; /* Added rounded corners */
+}
+
+.location-search .input-group-text {
+    position: absolute;
+    right: 10px; /* Positioned the icon inside the input field */
+    top: 50%; /* Vertically centered the icon */
+    transform: translateY(-50%); /* Ensures perfect vertical alignment */
+    background: transparent; /* Removed background for seamless integration */
+    border: none; /* Removed border for cleaner look */
+    color: #666;
+}
+
+.location-icon i {
+    font-size: 16px; /* Adjusted icon size */
+}
+

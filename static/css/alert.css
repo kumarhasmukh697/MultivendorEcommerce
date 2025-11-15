@@ -1,0 +1,32 @@
+#successAlert {
+    position: fixed;
+    bottom: -100px; /* Hidden initially */
+    left: 50%;
+    transform: translateX(-50%);
+    width: auto;
+    z-index: 1050;
+    opacity: 0; /* Invisible initially */
+    transition: bottom 0.5s ease-in-out, opacity 0.5s ease-in-out;
+    animation: slideInOut 4s ease forwards;
+  }
+  
+  /* Keyframes for sliding in and out */
+  @keyframes slideInOut {
+    0% {
+      bottom: -100px;
+      opacity: 0;
+    }
+    10% {
+      bottom: 20px; /* Visible position */
+      opacity: 1;
+    }
+    90% {
+      bottom: 20px; /* Stay visible */
+      opacity: 1;
+    }
+    100% {
+      bottom: -100px; /* Slide out */
+      opacity: 0;
+    }
+  }
+  
