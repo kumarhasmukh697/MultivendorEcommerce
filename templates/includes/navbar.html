@@ -1,0 +1,61 @@
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/custom.css' %}">
+<header id="header">
+    <div class="main-header">
+        <div class="container">
+            <nav class="navbar navbar-expand-lg">
+                <div class="container-fluid p-0">
+                    <!-- Logo -->
+                    <div class="navbar-brand">
+                        <a href="{% url 'home' %}">
+                            <img src="{% static 'logo/foodOnlineLogo.png' %}" alt="FoodOnline" class="logo">
+                        </a>
+                    </div>
+
+                    <!-- Location Search -->
+                    <div class="location-search">
+                        <div class="input-group">
+                            <input type="text" class="form-control" placeholder="Enter your delivery location">
+                            <span class="input-group-text location-icon">
+                                <i class="fa-solid fa-location-dot"></i>
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- Login/Register Options -->
+                    <div class="d-flex align-items-center" style="gap: 12px;">
+                        <a href="{% url 'marketplace' %}" 
+                           style="padding: 4px 16px; border: 1px solid #c33332; border-radius: 20px; color: #c33332; background: #fff; font-weight: 500; font-size: 15px; text-decoration: none; transition: background 0.2s;"
+                           onmouseover="this.style.background='#f8d7da';" 
+                           onmouseout="this.style.background='#fff';">
+                            Marketplace
+                        </a>
+                        {% if user.is_authenticated %}
+                            {% if user.role == 2 %}
+                                <a href="{% url 'cart' %}" style="color: #222; text-decoration: none; font-weight: 500; position: relative;">
+                                    <i class="fa fa-shopping-cart"></i>
+                                    <span id='cart-count' class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-warning" style="font-size: 12px;">
+                                        {{ cart_count }}
+                                        
+                                    </span>
+                                </a>
+                            {% endif %}
+                            <a href="{% url 'myAccount' %}" style="color: #6c757d; font-weight: 600; text-decoration: none;  padding-left: 1rem;">My Account</a>
+                            <a href="{% url 'logout' %}" style="color: #6c757d; font-weight: 600; text-decoration: none;">Logout</a>
+                        {% else %}
+                            <a href="{% url 'registerUser' %}" style="color: #6c757d; font-weight: 600; text-decoration: none;">customer</a>
+                            <a href="{% url 'registerVendor' %}" style="color: #6c757d; font-weight: 600; text-decoration: none;">vendor</a>
+
+                             <a href="{% url 'login' %}" 
+                               style="padding: 4px 16px; border: 1px solid #c33332; border-radius: 20px; color: #c33332; background: #fff; font-weight: 500; font-size: 15px; text-decoration: none; transition: background 0.2s;"
+                               onmouseover="this.style.background='#f8d7da';" 
+                               onmouseout="this.style.background='#fff';">
+                                Login
+                            </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </nav>
+        </div>
+    </div>
+</header>

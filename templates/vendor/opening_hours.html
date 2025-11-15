@@ -1,0 +1,204 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+<div class="wrapper">
+    <div class="main-section">
+        {% include 'includes/cover_photo.html' %}
+        <div class="page-section account-header buyer-logged-in">
+            <div class="container">
+                <div class="row">
+                    {% include 'vendor/vendor_sidebar.html' %}
+                    <div class="col-lg-9 col-md-9 col-sm-12 col-xs-12">
+                        <div class="user-dashboard loader-holder">
+                            <div class="user-holder">
+                                <h5 class="text-uppercase">Opening Hours</h5><br>
+                                <form id="add-opening-hour-form" class="row g-2 align-items-end mb-4">
+                                    <div class="col-md-3">
+                                        <label for="day">Day</label>
+                                        <select class="form-control" name="day" id="day" required>
+                                            <option value="Monday">Monday</option>
+                                            <option value="Tuesday">Tuesday</option>
+                                            <option value="Wednesday">Wednesday</option>
+                                            <option value="Thursday">Thursday</option>
+                                            <option value="Friday">Friday</option>
+                                            <option value="Saturday">Saturday</option>
+                                            <option value="Sunday">Sunday</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <label for="opening_time">Opening Time</label>
+                                        <input type="time" class="form-control" name="opening_time" id="opening_time">
+                                    </div>
+                                    <div class="col-md-2">
+                                        <label for="closing_time">Closing Time</label>
+                                        <input type="time" class="form-control" name="closing_time" id="closing_time">
+                                    </div>
+                                    <div class="col-md-2 d-flex align-items-center">
+                                        <label class="mb-0">
+                                            <input type="checkbox" id="is_closed" name="is_closed"> Closed
+                                        </label>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <button type="submit" class="btn btn-secondary" style="border-radius: 10px;" id="add">Add</button>
+                                    </div>
+                                </form>
+                                <!-- ...form code stays the same... -->
+                                 <br>
+                                <table class="table table-bordered" id="hours-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Day</th>
+                                            <th>Opening</th>
+                                            <th>Closing</th>
+                                            <th>Status</th>
+                                            <th>Delete</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% for hour in opening_hours %}
+                                        <tr data-id="{{ hour.id }}">
+                                            <td>{{ hour.day_of_week }}</td>
+                                            <td>{{ hour.opening_time|time:"H:i"|default:"-" }}</td>
+                                            <td>{{ hour.closing_time|time:"H:i"|default:"-" }}</td>
+                                            <td>
+                                                {% if hour.is_closed %}
+                                                    <span class="badge bg-warning text-dark">Holiday</span>
+                                                {% else %}
+                                                    {% if hour.day_of_week == current_day %}
+                                                        {% if "Shop Open" in hour.status %}
+                                                            <span class="badge bg-success">Shop Open</span>
+                                                        {% else %}
+                                                            <span class="badge bg-danger">Closed</span>
+                                                        {% endif %}
+                                                    {% else %}
+                                                        <span class="badge bg-success">Open</span>
+                                                    {% endif %}
+                                                {% endif %}
+                                            </td>
+                                            <td>
+                                                <button  data-id="{{ hour.id }}" style="padding: 10px;" onclick="deleteOpeningHour(this)"><i class="fa-solid fa-trash fa-xl" style="color: #010204;"></i></button>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% include 'includes/alert.html' %}
+
+ <!-- Replace your existing script section with this: -->
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('add-opening-hour-form');
+    const isClosedCheckbox = document.getElementById('is_closed');
+    const openingTime = document.getElementById('opening_time');
+    const closingTime = document.getElementById('closing_time');
+    
+    // Handle checkbox change
+    isClosedCheckbox.addEventListener('change', function() {
+        openingTime.disabled = this.checked;
+        closingTime.disabled = this.checked;
+        if (this.checked) {
+            openingTime.value = '';
+            closingTime.value = '';
+        }
+    });
+
+    // Handle form submission
+    form.addEventListener('submit', async function(e) {
+        e.preventDefault();
+
+        // Validation
+        if (!isClosedCheckbox.checked && (!openingTime.value || !closingTime.value)) {
+            swal("Error", "Please fill in both opening and closing times.", "error");
+            return;
+        }
+
+        if (!isClosedCheckbox.checked && openingTime.value >= closingTime.value) {
+            swal("Error", "Opening time cannot be later than or equal to closing time.", "error");
+            return;
+        }
+
+        try {
+            const response = await fetch("{% url 'add_opening_hour' %}", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': '{{ csrf_token }}'
+                },
+                body: JSON.stringify({
+                    day: document.getElementById('day').value,
+                    opening_time: openingTime.value,
+                    closing_time: closingTime.value,
+                    is_closed: isClosedCheckbox.checked
+                })
+            });
+
+            const data = await response.json();
+            
+            if (data.success) {
+                // Refresh the page to show updated data
+                window.location.reload();
+            } else {
+                swal("Error", data.error || "Failed to add opening hours.", "error");
+            }
+        } catch (error) {
+            console.error("Error:", error);
+            swal("Error", "An error occurred while adding opening hours.", "error");
+        }
+    });
+});
+
+// Add the deleteOpeningHour function
+async function deleteOpeningHour(button) {
+    try {
+        const willDelete = await swal({
+            title: "Are you sure?",
+            text: "Once deleted, you will not be able to recover these hours!",
+            icon: "warning",
+            buttons: true,
+            dangerMode: true,
+        });
+
+        if (!willDelete) {
+            return;
+        }
+
+        const hourId = button.getAttribute('data-id');
+        const response = await fetch("{% url 'delete_opening_hour' %}", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': '{{ csrf_token }}'
+            },
+            body: JSON.stringify({
+                id: hourId
+            })
+        });
+
+        const data = await response.json();
+        
+        if (data.success) {
+            // Remove the row from the table
+            const row = button.closest('tr');
+            row.remove();
+            swal("Success", "Opening hours deleted successfully!", "success");
+        } else {
+            swal("Error", data.error || "Could not delete opening hours.", "error");
+        }
+    } catch (error) {
+        console.error("Error:", error);
+        swal("Error", "An error occurred while deleting.", "error");
+    }
+}
+</script>
+
+{% endblock %}

@@ -1,0 +1,37 @@
+{% url 'myAccount' as myAccount_url %}
+{% url 'vprofile' as vprofile_url %}
+{% url 'menu_builder' as menu_builder_url %}  <!-- Add this line -->
+{% url 'forgot_password' as forgot_password_url %}
+{% url 'logout' as logout_url %}
+
+
+<div class="col-lg-3 col-md-3 col-sm-12 col-xs-12">
+    <div class="user-account-nav user-account-sidebar">
+        <div class="user-nav-list">
+            <ul>
+                <li class="{% if request.path == myAccount_url %}active{% endif %}">
+                    <a href="{% url 'myAccount' %}"><i class="icon-dashboard3"></i>Dashboard</a>
+                </li>
+                <li class="{% if request.path == vprofile_url %}active{% endif %}">
+                    <a href="{% url 'vprofile' %}"><i class="icon-building"></i>My Restaurant</a>
+                </li>
+                <li class="{% if request.path == menu_builder_url %}active{% endif %}">
+                    <a href="{% url 'menu_builder' %}"><i class="icon-menu5"></i>Menu Builder</a>
+                </li>
+                <li class="{% if request.path == opening_hours_url %}active{% endif %}">
+                    <a href="{% url 'opening_hours' %}"><i class="icon-clock"></i>Opening Hours</a>
+                </li>
+                <li class="{% if request.path == 'restaurant-orders.html' %}active{% endif %}">
+                    <a href="{% url 'orders' %}"><i class="icon-add_shopping_cart"></i>Orders</a>
+                </li>
+                
+                <li class="{% if request.path == forgot_password_url %}active{% endif %}">
+                    <a href="{% url 'forgot_password' %}"><i class="icon-unlock-alt"></i>Change Password</a>
+                </li>
+                <li class="{% if request.path == logout_url %}active{% endif %}">
+                    <a class="logout-btn" href="{% url 'logout' %}"><i class="icon-log-out"></i>Signout</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>

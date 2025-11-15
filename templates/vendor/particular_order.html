@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+
+{% include 'includes/cover_photo.html' %}
+<div class="page-section account-header buyer-logged-in">
+    <div class="container">
+        <div class="row">
+            {% include 'vendor/vendor_sidebar.html' %}
+            <div class="col-lg-9 col-md-9 col-sm-12 col-xs-12">
+                <div class="user-dashboard loader-holder">
+                    <div class="user-holder">
+                        <h5 class="text-uppercase">Order #{{ order.order_number }} Details</h5>
+
+                        <table class="table">
+                            <thead class="thead-dark">
+                                <tr>
+                                <th scope="col">Image</th>
+                                <th scope="col">Item Name</th>
+                                <th scope="col">Quantity</th>
+                                <th scope="col">Price</th>
+                                <th scope="col">Total</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for item in orderfood %}
+                                {% if item.food_item.vendor.vendor_name == vendor.vendor_name %}
+                                    <tr>
+                                    <td><img src="{{ item.food_item.image.url }}" alt="{{ item.food_item.name }}" width="100"></td>
+                                    <td>{{ item.food_item }}</td>
+                                    <td>{{ item.quantity }}</td>
+                                    <td>{{ item.price }}</td>
+                                    <td>{{ item.amount }}</td>
+                                    </tr>
+                                {% endif %}
+                                {% endfor %}
+                            </tbody>
+                        </table>    
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+

@@ -1,0 +1,85 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="main-section">
+    <div class="page-section nopadding cs-nomargin" style="margin-top: 0px;padding-top: 60px;padding-bottom: 60px;margin-bottom: 0px;">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
+                    <div class="user-dashboard loader-holder">
+                        <div class="user-holder">
+                    <h4 class="text-center" style="margin-bottom: 0;">WELCOME TO FOODONLINE</h4>
+                    <p class="text-center">Please fill this form to get yourself onboarded in the foodOnline marketplace.</p>
+                    <hr>
+                    <div class="container mt-4">
+                        <form method="post" action="{% url 'registerUser' %}">
+                          {% csrf_token %}
+                          <div class="row">
+                            <!-- First Name and Last Name -->
+                            <div class="col-lg-6 col-md-6 col-sm-12 mb-3">
+                              <div class="field-holder">
+                                <label for="id_first_name" class="form-label">First Name</label>
+                                {{ form.first_name }}
+                              </div>
+                            </div>
+                            <div class="col-lg-6 col-md-6 col-sm-12 mb-3">
+                              <div class="field-holder">
+                                <label for="id_last_name" class="form-label">Last Name</label>
+                                {{ form.last_name }}
+                              </div>
+                            </div>
+                          </div>
+                      
+                          <div class="row">
+                            <!-- Email and Username -->
+                            <div class="col-lg-6 col-md-6 col-sm-12 mb-3">
+                              <div class="field-holder">
+                                <label for="id_email" class="form-label">Email Address</label>
+                                {{ form.email }}
+                              </div>
+                            </div>
+                            <div class="col-lg-6 col-md-6 col-sm-12 mb-3">
+                              <div class="field-holder">
+                                <label for="id_username" class="form-label">Username</label>
+                                {{ form.username }}
+                              </div>
+                            </div>
+                          </div>
+                      
+                          <div class="row">
+                            <!-- Password and Confirm Password -->
+                            <div class="col-lg-6 col-md-6 col-sm-12 mb-3">
+                              <div class="field-holder">
+                                <label for="id_password" class="form-label">Password</label>
+                                {{ form.password }}
+                              </div>
+                            </div>
+                            <div class="col-lg-6 col-md-6 col-sm-12 mb-3">
+                              <div class="field-holder">
+                                <label for="id_confirm_password" class="form-label">Confirm Password</label>
+                                {{ form.confirm_password }}
+                              </div>
+                            </div>
+                          </div>
+                      
+                          <button type="submit" class="btn btn-primary" style="background-color: #c33332; border-radius: 3px; text-transform: uppercase;color: #fff; font-family: 'Montserrat', sans-serif; border: none; font-weight:400;font-size: 12px; ">Submit</button><br><br>
+                          
+                          {% if form.errors %}
+                          <ul>
+                            {% for field in form %}
+                              <li  style="color: red;"> {{field.errors}}</li>
+                            {% endfor %}
+                            <li style="color: red;">{{form.non_field_errors}}</li>
+                          </ul> 
+                          {% endif %} 
+                        </form>
+                        {% include 'includes/alert.html' %}
+                      </div>
+                </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

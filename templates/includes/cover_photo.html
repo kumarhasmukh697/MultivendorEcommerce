@@ -1,0 +1,64 @@
+ {% load static %}
+ <style>
+ 
+    .restaurant-detail-image-section:before {
+        background: rgba(0, 0, 0, 0.1) !important;
+    }
+
+    /* Update text color with higher specificity */
+    .restaurant-detail-image-section .company-info-detail .company-info .text-holder,
+    .restaurant-detail-image-section .company-info-detail .company-info .text-holder span,
+    .restaurant-detail-image-section .company-info-detail .company-info .text-holder p,
+    .restaurant-detail-image-section .company-info-detail .company-info .text {
+        color: #f0e7e7 !important;
+    }
+
+    .restaurant-detail-image-section {
+        position: relative;
+    }
+
+    .restaurant-detail-image-section .company-info-detail {
+        position: relative;
+        z-index: 1;
+    }
+ </style>
+ <div class="page-section restaurant-detail-image-section" 
+     style='background: url("{% if user.userprofile.cover_photo %}{{ user.userprofile.cover_photo.url }}{% else %}{% static 'extra-images/banner-img.jpg' %}{% endif %}") no-repeat scroll 0 0 / cover;'>
+        <!-- Container Start -->
+        <div class="container">
+            <!-- Row Start -->
+            <div class="row">
+                <!-- Column Start -->
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                    <div class="company-info-detail">
+                        <div class="company-info">
+                            <div class="img-holder">
+                                <figure>
+                                     {% if user.userprofile.profile_picture %}
+                                    <img src="{{ user.userprofile.profile_picture.url }}" alt="{{ user.username }}">
+                                     {% else %}
+                                    <img src="{% static 'extra-images/listing-logo18.png' %}" alt="{{ user.username }}">
+                                     {% endif %}
+                                </figure>
+                            </div>
+
+                            <div class="text-holder">
+                                <span class="restaurant-title">{{vendor.vendor_name}}</span>
+                                
+                                                <div class="text">
+                                                    <i class="icon-location"></i>
+                                                    <p>{{user.userprofile.get_full_address}}</p>
+                                                    <p><i class="fa-solid fa-phone fa-sm" style="color:white"></i> +91-{{user.phone_number}}</p>
+                                                    
+                                                    <!-- <p>{{user.userprofile.city}}, {{user.userprofile.state}}, {{user.userprofile.country}} - {{user.userprofile.pin_code}}</p> -->
+                                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Column End -->
+            </div>
+            <!-- Row End -->
+        </div>
+        <!-- Container End -->
+    </div>

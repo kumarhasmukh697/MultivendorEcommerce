@@ -1,0 +1,279 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+<!-- Main Section Start -->
+<div class="main-section pt-5">
+    <div class="page-section">
+        <div class="container">
+            <div class="row">
+                
+                <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                    <div class="tabs-holder horizontal">
+                        <ul class="stickynav-tabs nav nav-tabs">
+                            <li class="active">
+                                <a data-toggle="tab" href="#home">
+                                    <i class="fas fa-address-card fa-lg" style="color: #c30925;"></i>
+                                    Billing Address
+                                </a>
+                            </li>
+                        </ul>
+                        <div class="tab-content">
+                            <div id="home" class="tab-pane in active">
+                                <div class="menu-itam-holder">
+                                    <div id="menu-item-list-6272" class="menu-itam-list">
+                                        
+                                        <div class="row">
+                                            <div class="form-group col-md-6 col-sm-12 col-lg-6">
+                                                <strong>Name: </strong>{{ user.first_name }} {{user.last_name}}
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="form-group col-md-6 col-sm-12 col-lg-6">
+                                                <strong>Phone Number: </strong>{{ user.phone_number}}
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="form-group col-md-12 col-sm-12 col-lg-12">
+                                                <strong>Address: </strong>{{ user_profile.address }}
+                                            </div>
+                                            <div class="form-group col-md-12 col-sm-12 col-lg-12">
+                                                <strong>Email Address: </strong>{{ user.email }}
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="form-group col-md-6 col-sm-12 col-lg-6">
+                                                <strong>Country: </strong>{{ user_profile.country }}
+                                            </div>
+                                            <div class="form-group col-md-6 col-sm-12 col-lg-6">
+                                                <strong>State: </strong>{{ user_profile.state }}
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="form-group col-md-6 col-sm-12 col-lg-6">
+                                                <strong>City: </strong>{{ user_profile.city }}
+                                            </div>
+                                            <div class="form-group col-md-6 col-sm-12 col-lg-6">
+                                                <strong>Pin Code: </strong>{{ user_profile.pin_code }}
+                                            </div>
+                                        </div>
+
+                                        <a href="{% url 'profile' %}">update profile</a>
+                                        
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Your order section -->
+                <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                    <div class="tabs-holder horizontal">
+                        <ul class="stickynav-tabs nav nav-tabs">
+                            <li class="active">
+                                <a data-toggle="tab" href="#home">
+                                    <i class="icon- icon-room_service"></i>Your Order
+                                </a>
+                            </li>
+                        </ul>
+                        <div class="tab-content">
+                            <div id="home" class="tab-pane in active">
+                                <div class="menu-itam-holder">
+                                    <div id="menu-item-list-6272" class="menu-itam-list">
+                                        <ul>
+                                            <!-- Inside your order items loop -->
+                                            {% for item in cart_items %}
+                                            <li id="cart-item-{{item.id}}">
+                                                <div class="image-holder"> 
+                                                    <img src="{{item.product.image.url}}" alt="">
+                                                </div>
+                                                <div class="text-holder">
+                                                    <h6>{{ item.product.food_title }}</h6>
+                                                    <span>{{ item.product.description }}</span>
+                                                </div>
+                                                <div class="quantity" style="display: inline-block; position: absolute; top: 50%; transform: translateY(-50%); margin-top: -10px;">
+                                                    <span>{{ item.quantity }} QTY</span>
+                                                </div>
+                                                <div class="price-holder">
+                                                    <span class="price">${{ item.price }}</span>
+                                                </div>
+                                            </li>
+                                            {% endfor %}
+                                        </ul>
+                                    </div>
+                                    
+                                    <div>
+                                        <ul>
+                                            <li style="list-style-type: none;">
+                                                Subtotal
+                                                <span class="price float-right">
+                                                    <span class="currency">$</span>
+                                                    <span id="subtotal">{{ subtotal }}</span>
+                                                </span>
+                                            </li>
+
+                                            {% for key, value in tax_dict.items %}
+                                                {% for i, j in value.items %}
+                                                    <li style="list-style-type: none;">
+                                                        {{ key }} <small>({{ i }}%)</small>
+                                                        <span class="price float-right">
+                                                            <span class="currency">$</span>
+                                                            <span id="tax-{{ key }}">{{ j }}</span>
+                                                        </span>
+                                                    </li>
+                                                {% endfor %}
+                                            {% endfor %}
+
+                                            <li style="list-style-type: none; font-weight: 600;">
+                                                TOTAL
+                                                <span class="price float-right">
+                                                    <span class="currency">$</span>
+                                                    <span id="total">{{ grand_total }}</span>
+                                                </span>
+                                            </li>
+
+                                            <!-- Select payment method -->
+                                            <br>
+                                            <h5>SELECT PAYMENT METHOD</h5>
+                                            
+                                            <div class="payment-method">
+                                                <label>
+                                                    <input type="radio" name="payment_method" value="PayPal">
+                                                    <img src="{% static 'images/PayPal.png' %}" alt="PayPal" width="100">
+                                                </label>
+                                                &emsp;
+                                                <label>
+                                                    <input type="radio" name="payment_method" value="RazorPay">
+                                                    <img src="{% static 'images/razorpay_logo.png' %}" alt="RazorPay" width="100">
+                                                </label>
+                                            </div>
+                                            <span class="text-danger" id="payment-method-error"></span>
+                                           
+                                            <br>
+                                            <div id="paypal-button-container"></div>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+</div>
+ 
+
+ <script>
+
+    function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            // Does this cookie string begin with the name we want?
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+    
+   
+    var grand_total = parseFloat(document.getElementById('total').innerText).toFixed(2);
+    var grand_total = grand_total.toString();
+    var url = "{% url 'place_order' %}"
+    const csrftoken = getCookie('csrftoken');
+   
+    // Render the PayPal button into #paypal-button-container
+    paypal.Buttons({
+
+        // Set up the transaction
+        createOrder: function(data, actions) {
+            return actions.order.create({
+                purchase_units: [{
+                    amount: {
+                        value: grand_total,
+                        currency_code: 'USD'
+                    }
+                }],
+                application_context: {
+                        user_action: "PAY_NOW",
+                        shipping_preference: "NO_SHIPPING"
+               }
+            });
+        },
+
+        // Finalize the transaction
+        onApprove: function(data, actions) {
+            return actions.order.capture().then(function(orderData) {
+                // Successful capture! For demo purposes:
+                var transaction = orderData.purchase_units[0].payments.captures[0];
+
+                var transaction_id = transaction.id
+                var status = orderData.status
+                var payment_method = 'PayPal'
+                sendTransaction(transaction_id, payment_method, status);
+
+                
+            });
+        },
+
+        onError: function(err) {
+            console.error("PAYPAL ERROR:", err);
+        }
+
+
+    }).render('#paypal-button-container');
+
+
+  function sendTransaction(transaction_id, payment_method, status) {
+    console.log("Transaction ID: " + transaction_id);
+    console.log("Payment Method: " + payment_method);
+    console.log("Status: " + status);
+
+    fetch(url, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': csrftoken
+        },
+        body: JSON.stringify({
+            'transaction_id': transaction_id,
+            'payment_method': payment_method,
+            'status': status
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'success') {
+            swal({
+                title: "Order Placed!",
+                text: "Your order has been placed successfully!",
+                icon: "success",
+                buttons: false,
+                timer: 2000,
+            }).then(() => {
+                window.location.href = `/customer/order_complete/${data.order_number}/`;
+            });
+        } else {
+            swal("Error", data.message, "error");
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        swal("Error", "Something went wrong. Please try again.", "error");
+    });
+}
+ </script>
+{% endblock %}

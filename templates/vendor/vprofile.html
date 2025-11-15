@@ -1,0 +1,182 @@
+{% extends 'base.html' %}
+{% block content %}
+{% load static %}
+
+	<div class="wrapper">
+		
+		<!-- Main Section Start -->
+		<div class="main-section">
+
+			<!-- Cover Image Section Start -->
+			{% include 'includes/cover_photo.html' %}
+			<!-- Cover Image Section End -->
+
+
+			<div class="page-section account-header buyer-logged-in">
+				<div class="container">
+					<div class="row">
+						 {% include 'vendor/vendor_sidebar.html' %}
+						<div class="col-lg-9 col-md-9 col-sm-12 col-xs-12">
+							<div class="user-dashboard loader-holder">
+								<div class="user-holder">
+									<h5 class="text-uppercase">Manage Your Restaurant</h5>
+									<!-- My Restaurants Form Start -->
+									<form action="{{ request.path }}" method="post" enctype="multipart/form-data">
+                                        {% csrf_token %}
+										<div class="form-fields-set">
+											<ul>
+												<li>
+													<div class="row">
+														<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+															<div class="restaurant-info">
+																<div class="img-holder">
+																	<ul class="foodbakery-gallery-holder">
+																		<li class="gal-img">
+																			<div class="drag-list">
+																				<div class="item-thumb">
+																					{% if profile.profile_picture %}
+																					<img class="thumbnail" src="{{ profile.profile_picture.url }}" alt="">
+																					{% else %}
+																					<img class="thumbnail" src="{% static 'extra-images/listing-logo18.png' %}" alt="">
+																					{% endif %}
+																				</div>
+																			</div>
+																		</li>
+																	</ul>
+																</div>
+																<div class="text-holder">
+																	<label>Update Logo</label>
+																	<div class="upload-gallery">
+																		<input type="file" class="btn btn-info" name="profile_picture">
+																	</div>
+																</div>
+															</div>
+														</div>
+														<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+															<div class="restaurant-info">
+																<div class="img-holder">
+																	<ul class="foodbakery-gallery-holder">
+																		<li class="gal-img">
+																			<div class="drag-list">
+																				<div class="item-thumb">
+																					{% if profile.cover_photo %}
+																					<img class="thumbnail" src="{{ profile.cover_photo.url }}" alt="">
+																					{% else %}
+																					<img class="thumbnail" src="{% static 'extra-images/listing-logo18.png' %}" alt="">
+																					{% endif %}
+																				</div>
+																			</div>
+																		</li>
+																	</ul>
+																</div>
+																<div class="text-holder">
+																	<label>Update Cover Photo</label>
+																	<div class="upload-gallery">
+																		<input type="file" class="btn btn-info" name="cover_photo">
+																	</div>
+																	
+																</div>
+															</div>
+														</div>
+														<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+															<div class="restaurant-info">
+																<div class="img-holder">
+																	<ul class="foodbakery-gallery-holder">
+																		<li class="gal-img">
+																			<div class="drag-list">
+																				<div class="item-thumb">
+																					<img class="thumbnail" src="{{ vendor.vendor_license.url }}" alt="">
+																				</div>
+																			</div>
+																		</li>
+																	</ul>
+																</div>
+																<div class="text-holder">
+																	<label>Update License</label>
+																	<div class="upload-gallery">
+																		<input type="file" class="btn btn-info" name="license">
+																	</div>
+																	
+																</div>
+															</div>
+														</div>
+													    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+    <!-- Restaurant Name Field -->
+    <div class="field-holder">
+        <label>Restaurant name *</label>
+        <input type="text" name="restaurant_name" value="{{ vendor.vendor_name }}" placeholder="i.e Pizza Hut" class="foodbakery-dev-req-field">
+    </div>
+    <div class="field-holder">
+                <label>Address *</label>
+                <input type="text"  id="id_address" name="address" value="{{ profile.address }}" placeholder="Enter your complete address" class="foodbakery-dev-req-field">
+            </div>
+
+    <!-- Two Column Layout Start -->
+    <div class="row">
+        <!-- Left Column -->
+        <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+            
+            
+            <div class="field-holder">
+                <label>Country *</label>
+                <input type="text" id="id_country" name="country" value="{{ profile.country }}" placeholder="Country" class="foodbakery-dev-req-field">
+            </div>
+            
+            <div class="field-holder">
+                <label>State *</label>
+                <input type="text" id="id_state" name="state" value="{{ profile.state }}" placeholder="State" class="foodbakery-dev-req-field">
+            </div>
+            
+            <div class="field-holder">
+                <label>Latitude</label>
+                <input type="text" id="id_latitude" name="latitude" value="{{ profile.latitude }}" placeholder="Latitude" class="foodbakery-dev-req-field">
+            </div>
+        </div>
+        
+        <!-- Right Column -->
+        <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+            <div class="field-holder">
+                <label>City *</label>
+                <input type="text" id="id_city" name="city" value="{{ profile.city }}" placeholder="City" class="foodbakery-dev-req-field">
+            </div>
+            
+            <div class="field-holder">
+                <label>Pin Code *</label>
+                <input type="text" id="id_pin_code" name="pin_code" value="{{ profile.pin_code }}" placeholder="Pin Code" class="foodbakery-dev-req-field">
+            </div>
+            
+            <div class="field-holder">
+                <label>Longitude</label>
+                <input type="text" id="id_longitude" name="longitude" value="{{ profile.longitude }}" placeholder="Longitude" class="foodbakery-dev-req-field">
+            </div>
+        </div>
+    </div>
+    <!-- Two Column Layout End -->
+</div>
+														
+													</div>
+												</li>
+											</ul>
+											<div>
+												<div class="field-holder">
+													<div class="payment-holder input-button-loader">
+														<input class="update-restaurant" type="submit" value="Update Restaurant" onclick="location.href='restaurant-location.html';">
+													</div>
+												</div>
+											</div>
+										</div>
+									</form>
+									<!-- My Restaurants Form End -->
+
+								</div>
+							</div>
+						</div>
+
+					</div>
+				</div>
+			</div>
+		</div>
+		
+	</div>
+{% include 'includes/alert.html' %}	
+{% endblock %}

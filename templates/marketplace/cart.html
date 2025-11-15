@@ -1,0 +1,147 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<style>
+    .cart-item {
+        display: flex;
+        align-items: center;
+        padding: 1rem 0;
+        border-bottom: 1px solid #eee;
+    }
+    .cart-item:last-child {
+        border-bottom: none;
+    }
+    .cart-img {
+        width: 80px;
+        height: 80px;
+        object-fit: cover;
+        border-radius: 8px;
+        margin-right: 1rem;
+        border: 1px solid #ddd;
+        background: #fff;
+    }
+    .cart-title {
+        font-weight: 600;
+        font-size: 1.1rem;
+        margin-bottom: 0.25rem;
+    }
+    .cart-desc {
+        color: #666;
+        font-size: 0.95rem;
+    }
+    .cart-controls {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-left: auto;
+    }
+    .cart-qty {
+        min-width: 32px;
+        text-align: center;
+        font-weight: 500;
+        font-size: 1.1rem;
+    }
+    .cart-price {
+        font-weight: 600;
+        color: #c33332;
+        margin-left: 1.5rem;
+        font-size: 1.1rem;
+    }
+    .order-summary {
+        background: #fff;
+        border-radius: 8px;
+        box-shadow: 0 0 15px rgba(0,0,0,0.05);
+        padding: 1.5rem;
+    }
+    .order-summary .summary-title {
+        font-weight: 600;
+        font-size: 1.2rem;
+        margin-bottom: 1rem;
+    }
+    .order-summary .summary-row {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 0.5rem;
+    }
+    .order-summary .summary-total {
+        font-weight: 700;
+        font-size: 1.1rem;
+        border-top: 1px solid #eee;
+        padding-top: 0.75rem;
+        margin-top: 1rem;
+    }
+</style>
+
+<div class="page-section">
+    <div class="container">
+        <div class="row" style="padding-top: 4rem;">
+            <!-- Cart Items Section -->
+           <!-- Replace the cart items section with this updated version -->
+<div class="col-lg-8 col-md-8 col-sm-12 mb-4">
+    <div class="bg-white rounded shadow-sm p-4">
+        <h4 class="mb-4"><i class="fa fa-shopping-cart text-danger"></i> Your Cart</h4>
+        {% if cart_items %}
+            {% for cart_item in cart_items %}
+            <div class="cart-item">
+                <img class="cart-img" 
+                     src="{% if cart_item.product.image %}{{ cart_item.product.image.url }}{% else %}{% static 'images/default-food.png' %}{% endif %}" 
+                     alt="{{ cart_item.product.food_title }}">
+                <div>
+                    <div class="cart-title">{{ cart_item.product.food_title }}</div>
+                    <div class="cart-desc">{{ cart_item.product.description }}</div>
+                    <span class="badge badge-warning mt-2">
+                        <i class="fa fa-store me-1"></i>{{ cart_item.product.vendor.vendor_name }}
+                    </span>
+                </div>
+                <div class="cart-controls">
+                    <a href="#" class="btn btn-link p-0 minus-btn" data-item="{{ cart_item.product.id }}">
+                        <i class="fa fa-minus-circle text-danger" aria-hidden="true"></i>
+                    </a>
+                    <span class="cart-qty quantity" id="quantity-{{ cart_item.product.id }}">
+                        {{ cart_item.quantity|default:0 }}
+                    </span>
+                    <a href="#" class="btn btn-link p-0 plus-btn" data-item="{{ cart_item.product.id }}">
+                        <i class="fa fa-plus-circle text-success" aria-hidden="true"></i>
+                    </a>
+                </div>
+                <div class="cart-price">
+                    ${{ cart_item.price|floatformat:2 }}
+                </div>
+            </div>
+            {% if not forloop.last %}
+                <hr class="my-3">
+            {% endif %}
+            {% endfor %}
+        {% else %}
+            <div class="text-center text-muted py-5">Your cart is empty.</div>
+        {% endif %}
+    </div>
+</div>
+
+            <!-- Order Summary Section -->
+            <div class="col-lg-4 col-md-4 col-sm-12">
+                <div class="order-summary">
+                    <div class="summary-title"><i class="fa fa-receipt text-warning"></i> Order Summary</div>
+                    {% for cart_item in cart_items %}
+                    <div class="summary-row">
+                        <span>{{ cart_item.product.food_title }} = {{ cart_item.quantity }}</span>
+                        <span>${{ cart_item.product.price|floatformat:2 }}</span>
+                    </div>
+                    {% endfor %}
+                    <div class="summary-total summary-row">
+                        <span>Total</span>
+                        <span>${{ total}}</span>
+                    </div>
+                    {% if cart_count %}
+                    <div class="text-center mt-4">
+                        <a href="{% url 'checkout' %}" class="btn btn-danger btn-lg w-100" style="padding: 3px;">Proceed to Checkout</a>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

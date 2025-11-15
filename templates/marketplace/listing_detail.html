@@ -1,0 +1,191 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+<style>
+/* Main Menu Section Styles */
+.menu-section {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 2px 16px rgba(0,0,0,0.06);
+    padding: 2rem 1.5rem;
+    margin-bottom: 2rem;
+}
+.menu-category-title {
+    border-left: 4px solid #c33332;
+    padding-left: 1rem;
+    margin-bottom: 1.5rem;
+}
+.menu-category-title h5 {
+    color: #c33332;
+    font-weight: 700;
+    font-size: 1.3rem;
+    margin-bottom: 0.2rem;
+}
+.menu-category-title span {
+    color: #888;
+    font-size: 1rem;
+}
+.menu-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+.menu-item-row {
+    border-bottom: 1px solid #f0f0f0;
+    padding: 1.2rem 0;
+    align-items: center;
+}
+.menu-item-row:last-child {
+    border-bottom: none;
+}
+.menu-img {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 10px;
+    border: 1px solid #eee;
+    background: #fafafa;
+}
+.menu-item-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #222;
+    margin-bottom: 0.3rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.menu-item-desc {
+    color: #666;
+    font-size: 0.98rem;
+    margin-bottom: 0;
+    word-break: break-word;
+}
+.menu-price-controls {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 1.2rem;
+    min-width: 170px;
+}
+.menu-price {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #c33332;
+    margin-bottom: 0;
+    white-space: nowrap;
+}
+.cart-controls {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+}
+.cart-qty.quantity {
+    min-width: 28px;
+    text-align: center;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #333;
+}
+.plus-btn, .minus-btn {
+    outline: none;
+}
+.plus-btn i, .minus-btn i {
+    font-size: 1.3rem;
+    transition: color 0.2s;
+}
+.plus-btn i.text-success:hover {
+    color: #28a745;
+}
+.minus-btn i.text-danger:hover {
+    color: #a62928;
+}
+@media (max-width: 991px) {
+    .menu-item-row {
+        flex-direction: column !important;
+        align-items: stretch !important;
+        gap: 1rem;
+    }
+    .menu-price-controls {
+        justify-content: flex-start;
+        margin-top: 0.5rem;
+    }
+}
+@media (max-width: 600px) {
+    .menu-section {
+        padding: 1rem 0.5rem;
+    }
+    .menu-img {
+        width: 60px;
+        height: 60px;
+    }
+    .menu-category-title {
+        padding-left: 0.5rem;
+    }
+}
+</style>
+
+<div class="container my-5">
+    <div class="row">
+        <!-- Categories Sidebar -->
+        <div class="col-lg-3 col-md-4 mb-4">
+            <div class="bg-white rounded shadow-sm p-3 h-100">
+                <h6 class="mb-3 text-danger"><i class="fa fa-list"></i> Categories</h6>
+                <ul class="list-group">
+                    {% for category in categories %}
+                    <li class="list-group-item border-0 px-0 py-1">
+                        <a href="#category-{{ category.id }}" class="text-dark menu-category-link">{{ category.category_name }}</a>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+        <!-- Menu Items Section -->
+        <div class="col-lg-9 col-md-8">
+            <div class="menu-section">
+                {% for category in categories %}
+                <div id="category-{{ category.id }}" class="mb-5">
+                    <div class="menu-category-title">
+                        <h5>{{ category.category_name }}</h5>
+                        <span>{{ category.description }}</span>
+                    </div>
+                    <ul class="menu-list">
+                        {% for item in fooditems %}
+                        {% if item.category == category %}
+                        <li>
+                            <div class="row menu-item-row gx-2">
+                                <div class="col-auto">
+                                    <img class="menu-img" src="{% if item.image %}{{ item.image.url }}{% else %}{% static 'images/default-food.png' %}{% endif %}" alt="{{ item.food_title }}">
+                                </div>
+                                <div class="col-7 col-md-6">
+                                    <div class="menu-item-title">{{ item.food_title }}</div>
+                                    <div class="menu-item-desc">{{ item.description }}</div>
+                                </div>
+                                <div class="col-12 col-md menu-price-controls">
+                                    <span class="menu-price">${{ item.price }}</span>
+                                    {% if user.is_authenticated and user.role == 2 %}
+                                    <div class="cart-controls">
+                                        <a href="#" class="btn btn-link p-0 minus-btn" data-item="{{ item.id }}" slug="{{ vendor.vendor_slug }}">
+                                            <i class="fa fa-minus-circle text-danger" aria-hidden="true"></i>
+                                        </a>
+                                        <span class="cart-qty quantity" id="quantity-{{ item.id }}">0</span>
+                                        <a href="#" class="btn btn-link p-0 plus-btn" data-item="{{ item.id }}" slug="{{ vendor.vendor_slug }}">
+                                            <i class="fa fa-plus-circle text-success" aria-hidden="true"></i>
+                                        </a>
+                                    </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </li>
+                        {% endif %}
+                        {% endfor %}
+                    </ul>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

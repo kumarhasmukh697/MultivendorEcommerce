@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+<div class="wrapper">
+    <div class="main-section">
+        {% include 'includes/cover_photo.html' %}
+        <div class="page-section account-header buyer-logged-in">
+            <div class="container">
+                <div class="row">
+                    {% include 'vendor/vendor_sidebar.html' %}
+                    <div class="col-lg-9 col-md-9 col-sm-12 col-xs-12">
+                        <div class="user-dashboard loader-holder">
+                            <div class="user-holder">
+                                <h5 class="text-uppercase">Orders Details</h5>
+                                <div class="table-responsive">
+                                    {% if orders %}
+                                        <table class="table" id="myTable">
+                                            <thead class="thead-dark">
+                                                <tr>
+                                                    <th scope="col">Order #</th>
+                                                    <th scope="col">Customer</th>
+                                                    <th scope="col">Phone</th>
+                                                    <th scope="col">Date</th>
+                                                    <th scope="col">Status</th>
+                                                    <th scope="col">Action</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {% for order in orders %}
+                                                    <tr>
+                                                        <td><b> <a href="{% url 'particular_order' order.order_number %}">#{{ order.order_number }}</a></b></td>
+                                                        <td>{{ order.user.first_name }} {{ order.user.last_name }}</td>
+                                                        <td>{{ order.user.phone_number }}</td>
+                                                        <td>{{ order.ordered_date}}</td>
+                                                        <td>
+                                                            {% if order.status == 'New' %}
+                                                                <span class="badge badge-info">{{ order.status }}</span>
+                                                            {% elif order.status == 'Accepted' %}
+                                                                <span class="badge badge-success">{{ order.status }}</span>
+                                                            {% elif order.status == 'Completed' %}
+                                                                <span class="badge badge-success">{{ order.status }}</span>
+                                                            {% elif order.status == 'Cancelled' %}
+                                                                <span class="badge badge-danger">{{ order.status }}</span>
+                                                            {% endif %}
+                                                        </td>
+                                                        <td>
+                                                            <a href="{% url 'particular_order' order.order_number %}" class="btn btn-sm badge badge-danger" data-toggle="modal">
+                                                                <i class="fa fa-eye"></i> View
+                                                            </a>
+                                                        </td>
+                                                    </tr>
+                                                   
+                                                {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    {% else %}
+                                        <div class="text-center">
+                                            <img src="{% static 'images/no_orders.png' %}" alt="No Orders" style="max-width: 300px;">
+                                            <h4>You haven't received any orders yet!</h4>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% include 'includes/alert.html' %}
+
+{% endblock content %}
