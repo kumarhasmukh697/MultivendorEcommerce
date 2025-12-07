@@ -6,6 +6,16 @@ from accounts.context_processors import get_user_profile
 from accounts.models import User
 from accounts.utils import send_verification_email
 from django.contrib import messages,auth
+from django.shortcuts import render, redirect
+from django.contrib.auth.decorators import login_required
+from marketplace.models import AddToCart 
+from marketplace.context_processors import get_cart_amounts
+from decimal import Decimal 
+from datetime import datetime
+import json
+from django.http import JsonResponse
+from orders.models import Order, OrderedFood
+import time
 
 # Create your views here.
 
@@ -102,16 +112,10 @@ def bookings(request):
     return render(request, 'customer/bookings.html')
 
 
-def orders(request):
-    return render(request, 'customer/orders.html')
+# def orders(request):
+#     return render(request, 'customer/orders.html')
 
 
-from django.shortcuts import render, redirect
-from django.contrib.auth.decorators import login_required
-from marketplace.models import AddToCart  # Add this import
-from marketplace.context_processors import get_cart_amounts  # Add this import
-
-from decimal import Decimal  # Add this import at the top
 
 @login_required(login_url='login')
 def checkout(request):
@@ -141,38 +145,151 @@ def checkout(request):
     return render(request, 'customer/checkout.html', context)
 
 
-
-# filepath: c:\Django_project\MultivendorFood\customer\views.py
-
 @login_required(login_url='login')
 def place_order(request):
     if request.method == 'POST':
-        # Get payment method and transaction ID
-        payment_method = request.POST.get('payment_method')
-        transaction_id = request.POST.get('transaction_id')
-        
-        if payment_method and transaction_id:
-            # Process the order here
-            # Clear the cart
-            cart_items = AddToCart.objects.filter(user=request.user)
-            cart_items.delete()
+        try:
+            data = json.loads(request.body)
+            transaction_id = data.get('transaction_id')
+            payment_method = data.get('payment_method')
+            status = data.get('status')
             
-            return redirect('order_complete')
-    return redirect('checkout')
+            # Get cart items
+            cart_items = AddToCart.objects.filter(user=request.user)
+            if not cart_items:
+                return JsonResponse({'status': 'failed', 'message': 'No items in cart'})
 
+            # Generate single order number outside the loop
+            order_number = generate_order_number(request.user)
+            
+            # Group cart items by vendor
+            vendor_items = {}
+            for item in cart_items:
+                if item.product.vendor not in vendor_items:
+                    vendor_items[item.product.vendor] = []
+                vendor_items[item.product.vendor].append(item)
 
+            # Calculate total amounts for all vendors
+            total_subtotal = Decimal('0')
+            total_tax = Decimal('0')
+            total_grand = Decimal('0')
+            for vendor, items in vendor_items.items():
+                v_subtotal = sum(item.quantity * Decimal(str(item.price)) for item in items)
+                v_tax = v_subtotal * Decimal('0.05')
+                total_subtotal += v_subtotal
+                total_tax += v_tax
+                total_grand += (v_subtotal + v_tax)
 
+            try:
+                # Create single order for all vendors
+                order = Order.objects.create(
+                    order_number=order_number,
+                    user=request.user,
+                    total=total_subtotal,
+                    tax=total_tax,
+                    grand_total=total_grand,
+                    payment_method=payment_method,
+                    payment_id=transaction_id,
+                    payment_status='COMPLETED',
+                    status='New',
+                    first_name=request.user.first_name,
+                    last_name=request.user.last_name,
+                    phone=request.user.phone_number,
+                    email=request.user.email,
+                    address=request.user.userprofile.address,
+                    city=request.user.userprofile.city,
+                    state=request.user.userprofile.state,
+                    pin_code=request.user.userprofile.pin_code,
+                    total_quantity=sum(item.quantity for item in cart_items)
+                )
+
+                # Add all vendors to the order
+                for vendor in vendor_items.keys():
+                    order.vendors.add(vendor)
+
+                # Create ordered food items for all vendors
+                for vendor, items in vendor_items.items():
+                    for item in items:
+                        OrderedFood.objects.create(
+                            order=order,
+                            food_item=item.product,
+                            quantity=item.quantity,
+                            price=Decimal(str(item.price)),
+                            amount=item.quantity * Decimal(str(item.price))
+                        )
+
+                # Clear the cart after successful order creation
+                cart_items.delete()
+
+                return JsonResponse({
+                    'status': 'success',
+                    'message': 'Order placed successfully',
+                    'order_number': order_number
+                })
+
+            except Exception as e:
+                # If error occurs, delete the order
+                if 'order' in locals():
+                    order.delete()
+                return JsonResponse({
+                    'status': 'failed',
+                    'message': f'Failed to create order: {str(e)}'
+                })
+
+        except json.JSONDecodeError:
+            return JsonResponse({
+                'status': 'failed',
+                'message': 'Invalid JSON data'
+            })
+        except Exception as e:
+            return JsonResponse({
+                'status': 'failed',
+                'message': f'Error processing request: {str(e)}'
+            })
+
+    return JsonResponse({
+        'status': 'failed',
+        'message': 'Invalid request method'
+    })
+
+def generate_order_number(user):
+    # Get current timestamp
+    # take some time to genreate timestap using time.sleep
+    time.sleep(5)
+    timestamp = datetime.now().strftime('%Y%m%d%H%M%S')
+    order_number = f'{user.id}{timestamp}'
+    return order_number
 
 
 @login_required(login_url='login')
-def order_complete(request):
-    transaction_id = request.GET.get('transaction_id')
-    if not transaction_id:
-        return redirect('marketplace')
+def order_complete(request, order_number):
+    try:
+        # Get the order
+        order = Order.objects.get(order_number=order_number, user=request.user)
         
-    cart_items = AddToCart.objects.filter(user=request.user)
-    cart_items.delete()  # Clear the cart
+        # Get all ordered food items grouped by vendor
+        vendors_with_items = {}
+        ordered_foods = OrderedFood.objects.filter(order=order)
+        
+        for food in ordered_foods:
+            vendor = food.food_item.vendor
+            if vendor not in vendors_with_items:
+                vendors_with_items[vendor] = []
+            vendors_with_items[vendor].append(food)
+
+        context = {
+            'order': order,
+            'vendors_with_items': vendors_with_items.items(),
+            'subtotal': order.total,
+            'tax': order.tax,
+            'grand_total': order.grand_total,
+            'transaction_id': order.payment_id
+        }
+        
+        return render(request, 'orders/order_complete.html', context)
     
-    return render(request, 'customer/order_complete.html', {
-        'transaction_id': transaction_id
-    })
+    except Order.DoesNotExist:
+        return redirect('custDashboard')
+    except Exception as e:
+        print('Error:', e)
+        return redirect('custDashboard')

@@ -16,6 +16,8 @@ from django.utils.text import slugify
 from django.utils import timezone
 from accounts.context_processors import get_vendor,get_user_profile
 import json
+from orders.models import Order,OrderedFood
+from django.db.models import Q
 
 
 
@@ -218,12 +220,15 @@ def add_fooditem(request):
     vendor = get_object_or_404(Vendor, user=request.user)
     
     if request.method == 'POST':
+       
         form = FoodItemForm(request.POST, request.FILES)
         if form.is_valid():
+           
             fooditem = form.save(commit=False)
             fooditem.vendor = vendor
             fooditem.slug = slugify(form.cleaned_data['food_title'])
             fooditem.save()
+            
             messages.success(request, 'Food item added successfully.')
             return redirect('fooditems_by_category', pk=fooditem.category.pk)
         else:
@@ -411,9 +416,31 @@ def delete_opening_hour(request):
 
 
 
+@login_required(login_url='login')
+@restrict_customer
 def orders(request):
-    return render(request, 'vendor/orders.html')
+    vendor = get_object_or_404(Vendor, user=request.user)
+    orders = Order.objects.filter(vendors=vendor).order_by('-ordered_date')  # Changed from created_at to ordered_date
+    
+    context = {
+        'orders': orders,
+        'vendor': vendor,
+    }
+    return render(request, 'vendor/orders.html', context)
 
 
 def earnings(request):
     return render(request, 'vendor/earnings.html')
+
+
+
+@login_required(login_url='login')
+@restrict_customer
+def particular_order(request, order_number):
+    order = get_object_or_404(Order, order_number=order_number, vendors__user=request.user)
+    orderfood = OrderedFood.objects.filter(order=order)
+    context = {
+        'order': order,
+        'orderfood': orderfood
+    }
+    return render(request, 'vendor/particular_order.html', context)

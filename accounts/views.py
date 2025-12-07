@@ -33,7 +33,6 @@ def login(request):
                messages.success(request,"You are logged in")
                return redirect(detectUser(request.user))
               
-
           else:
                messages.warning(request,"Invalid Login credentials")
                return redirect('login')

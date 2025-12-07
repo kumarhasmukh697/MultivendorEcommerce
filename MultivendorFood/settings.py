@@ -116,6 +116,7 @@ DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL', default=EMAIL_HOST_USER)
 GOOGLE_API_KEY = config('GOOGLE_API_KEY')
 # Update this line to match your context processor name
 PAYPAL_CLIENT_ID = config('PAYPAL_SANDBOX_CLIENT_ID')  # Change from PAYPAL_SANDBOX_CLIENT_ID
+PAYPAL_SECRET_KEY = config('PAYPAL_SANDBOX_SECRET_KEY')
 
 
 # Password validation
@@ -142,7 +143,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Kolkata'
 
 USE_I18N = True
 
@@ -183,5 +184,6 @@ GEOS_LIBRARY_PATH = r"c:\Django_project\venv\Lib\site-packages\osgeo\geos_c.dll"
 
 LOGIN_URL = 'login'
 LOGIN_REDIRECT_URL = 'home'
+
 
 SECURE_CROSS_ORIGIN_OPENER_POLICY = 'same-origin-allow-popups'

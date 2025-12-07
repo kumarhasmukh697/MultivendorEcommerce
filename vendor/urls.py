@@ -26,5 +26,6 @@ urlpatterns = [
 
 
     path('orders/', views.orders, name='orders'),
+    path('particular_order/<int:order_number>/', views.particular_order, name='particular_order'),
     path('earnings/', views.earnings, name='earnings')
 ]

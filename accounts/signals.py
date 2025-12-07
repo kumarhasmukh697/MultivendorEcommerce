@@ -16,10 +16,3 @@ def post_save_create_profile_receiver(sender,instance,created,**kwargs):
         except:
             UserProfile.objects.create(user=instance)    
 
-
-
-
-# @receiver(pre_save,sender=User)
-# def pre_save_profile_receiver(sender,instance,**kwargs):
-#     print(instance.username,'this user is being saved')
-        
