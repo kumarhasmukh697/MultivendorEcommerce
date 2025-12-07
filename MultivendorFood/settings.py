@@ -23,6 +23,7 @@ INSTALLED_APPS = [
     'marketplace',
     'orders',
     'customer',
+    'menu'
 ]
 
 MIDDLEWARE = [
@@ -67,11 +68,15 @@ if config('DATABASE_URL', default='').startswith('postgres'):
     }
 else:
     # Development: Use SQLite with SpatiaLite
+    # In settings.py, comment out or remove:
+# 'django.contrib.gis',  # Remove temporarily
+
+# And use simple PostgreSQL backend:
     DATABASES = {
-        'default': {
-            'ENGINE': 'django.contrib.gis.db.backends.spatialite',
-            'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-        }
+        'default': dj_database_url.config(
+            conn_max_age=600,
+            ENGINE='django.db.backends.postgresql'  # Change from postgis
+        )
     }
 
 AUTH_PASSWORD_VALIDATORS = [
