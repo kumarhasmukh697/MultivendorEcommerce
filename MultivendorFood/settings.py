@@ -58,26 +58,32 @@ TEMPLATES = [
 WSGI_APPLICATION = 'MultivendorFood.wsgi.application'
 
 # Database - Use PostGIS for spatial data
-if config('DATABASE_URL', default='').startswith('postgres'):
-    # Production: Use PostGIS backend
-    DATABASES = {
-        'default': dj_database_url.config(
-            conn_max_age=600,
-            ENGINE='django.contrib.gis.db.backends.postgis'
-        )
-    }
-else:
-    # Development: Use SQLite with SpatiaLite
-    # In settings.py, comment out or remove:
-# 'django.contrib.gis',  # Remove temporarily
+# ...existing code...
+import dj_database_url
 
-# And use simple PostgreSQL backend:
+DATABASE_URL = config('DATABASE_URL', default='')
+
+if DATABASE_URL:
+    # parse the URL into a Django DATABASES dict (conn_max_age optional)
+    db_config = dj_database_url.parse(DATABASE_URL, conn_max_age=600)
+
+    # If you need PostGIS in production, set the spatial engine explicitly
+    if DATABASE_URL.startswith('postgres') or 'postgis' in DATABASE_URL:
+        db_config['ENGINE'] = 'django.contrib.gis.db.backends.postgis'
+    else:
+        # ensure a standard Postgres engine when using regular Postgres URL
+        if DATABASE_URL.startswith('postgres'):
+            db_config.setdefault('ENGINE', 'django.db.backends.postgresql')
+
+    DATABASES = {'default': db_config}
+else:
     DATABASES = {
-        'default': dj_database_url.config(
-            conn_max_age=600,
-            ENGINE='django.db.backends.postgresql'  # Change from postgis
-        )
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
     }
+# ...existing code...
 
 AUTH_PASSWORD_VALIDATORS = [
     {
