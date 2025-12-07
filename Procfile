@@ -1,0 +1,1 @@
+web: gunicorn MultivendorFood.wsgi:application --log-file -
